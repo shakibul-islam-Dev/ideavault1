@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./*"],
+      "@Components/*": ["./app/Components/*"],
+      "@Actions/*": ["./app/ideadetails/[_id]/*"]
+    }
+  }
+}

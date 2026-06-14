@@ -1,0 +1,2 @@
+IdeaVault is a web-based platform where users can share innovative startup ideas, explore ideas posted by others, and engage through comments, and discussions. The system encourages creativity, collaboration, and validation of ideas through community interaction.
+Instead of booking or scheduling, the platform focuses on idea validation and engagement, allowing users to discover trending ideas, provide feedback, and refine concepts collectively.
