@@ -44,9 +44,6 @@ importers:
       lucide-react:
         specifier: ^1.16.0
         version: 1.18.0(react@19.2.4)
-      mongobd:
-        specifier: ^0.0.1-security.0
-        version: 0.0.1-security.0
       mongodb:
         specifier: ^7.2.0
         version: 7.3.0
@@ -3549,9 +3546,6 @@ packages:
 
   minimist@1.2.8:
     resolution: {integrity: sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==}
-
-  mongobd@0.0.1-security.0:
-    resolution: {integrity: sha512-dsz5Ebvq99wMFAd+b0A40Er/PHNPa9aa5+nlr3QNcAXnd9g3FWVCFKd5TXyWgLafOboVBgShxp/K/CTb8zerhQ==}
 
   mongodb-connection-string-url@7.0.1:
     resolution: {integrity: sha512-h0AZ9A7IDVwwHyMxmdMXKy+9oNlF0zFoahHiX3vQ8e3KFcSP3VmsmfvtRSuLPxmyv2vjIDxqty8smTgie/SNRQ==}
@@ -7950,8 +7944,6 @@ snapshots:
       brace-expansion: 1.1.15
 
   minimist@1.2.8: {}
-
-  mongobd@0.0.1-security.0: {}
 
   mongodb-connection-string-url@7.0.1:
     dependencies:
