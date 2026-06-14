@@ -14,7 +14,6 @@ export default function Dashboard() {
       setLoading(true);
       const session = await authClient.getSession();
 
-      // ফিক্সড: Better Auth এর সঠিক টোকেন পাথ চেক
       const token =
         session?.data?.session?.token || session?.data?.token || session?.token;
       const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL;
@@ -25,7 +24,7 @@ export default function Dashboard() {
           "Content-Type": "application/json",
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
-        credentials: "include", // ফিক্সড: কুকি সেশন পাস করার জন্য
+        credentials: "include",
       });
 
       if (!res.ok) throw new Error("Failed to fetch activities");
@@ -39,12 +38,10 @@ export default function Dashboard() {
     }
   };
 
-  // প্রথমবার পেজ লোড হলে ডাটা আসবে
   useEffect(() => {
     fetchActivities();
   }, []);
 
-  // অ্যাক্টিভিটি ডিলিট করার ফাংশন
   const handleDelete = async (id) => {
     try {
       const session = await authClient.getSession();
@@ -58,7 +55,7 @@ export default function Dashboard() {
           "Content-Type": "application/json",
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
-        credentials: "include", // ফিক্সড: কুকি সেশন পাস করার জন্য
+        credentials: "include",
       });
 
       if (res.ok) {
@@ -82,7 +79,9 @@ export default function Dashboard() {
           Loading activities...
         </p>
       ) : activities.length === 0 ? (
-        <p className="text-slate-500 text-center py-10">No activities found.</p>
+        <p className="text-slate-500 text-6xl text-center py-10">
+          No activities found.
+        </p>
       ) : (
         <div className="space-y-4">
           {activities.map((activity) => {
@@ -111,7 +110,7 @@ export default function Dashboard() {
                 </div>
 
                 <Button
-                  onPress={() => handleDelete(activity._id)} // ফিক্সড: onClick কে HeroUI অনুযায়ী onPress করা হলো
+                  onPress={() => handleDelete(activity._id)}
                   className="absolute top-5 right-5 p-2 min-w-0 bg-transparent text-slate-400 hover:text-red-500 rounded-full"
                   title="Delete this log"
                 >

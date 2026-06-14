@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Button, Card, Form, Input } from "@heroui/react";
+import { Button, Card, Form, Input, Label } from "@heroui/react";
 import { FcGoogle } from "react-icons/fc";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -42,103 +42,73 @@ export default function Login() {
         router.refresh();
       }
     } catch (err) {
-      toast.error("Something went wrong. Please try again.");
+      toast.error("Something went wrong.");
       setIsLoading(false);
     }
   };
 
-  const handleGoogleSignIn = async () => {
-    setIsGoogleLoading(true);
-    try {
-      await authClient.signIn.social({
-        provider: "google",
-        callbackUrl,
-      });
-    } catch (err) {
-      toast.error("Google sign-in failed.");
-      setIsGoogleLoading(false);
-    }
-  };
-
   return (
-    <div className="flex min-h-screen w-full items-center justify-center p-4 bg-background text-foreground">
+    <div className="flex min-h-screen items-center justify-center p-4 bg-background">
       <ToastContainer position="top-center" autoClose={2000} />
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
         className="w-full max-w-md"
       >
-        <Card className="p-8 shadow-xl border border-default-200">
-          <div className="text-center mb-6">
+        <Card className="p-8 shadow-2xl border border-content2">
+          <div className="mb-6 text-center">
             <h2 className="text-2xl font-bold">Login</h2>
-            <p className="text-default-500 mt-1">
-              Welcome back! Please enter your details.
-            </p>
+            <p className="text-default-500">Welcome back!</p>
           </div>
 
           <Form className="flex flex-col gap-4" onSubmit={onSubmit}>
+            <Label>Email</Label>
             <Input
               name="email"
+              placeholder="Email"
               type="email"
               label="Email"
-              placeholder="john@example.com"
-              variant="bordered"
             />
+            <Label>Password</Label>
+            <Input name="password" placeholder="Password" type="password" />
 
-            <div className="flex flex-col gap-1">
-              <div className="flex justify-between items-center">
-                <span className="text-small font-medium">Password</span>
-                <Link
-                  href="/forgot-password"
-                  className="text-xs text-primary hover:underline"
-                >
-                  Forgot password?
-                </Link>
-              </div>
-              <Input
-                name="password"
-                type="password"
-                placeholder="••••••••"
-                variant="bordered"
-              />
+            <div className="flex justify-end">
+              <Link
+                href="/forgot-password"
+                className="text-xs text-primary hover:underline"
+              >
+                Forgot password?
+              </Link>
             </div>
 
             <Button
               type="submit"
               color="primary"
-              className="w-full font-semibold"
               isLoading={isLoading}
+              className="w-full font-bold"
             >
               Sign in
             </Button>
-
-            <div className="flex items-center gap-4 py-2">
-              <div className="flex-1 h-px bg-default-200"></div>
-              <span className="text-xs text-default-400">OR</span>
-              <div className="flex-1 h-px bg-default-200"></div>
-            </div>
-
-            <Button
-              className="flex items-center"
-              variant="bordered"
-              onPress={handleGoogleSignIn}
-            >
-              <FcGoogle size={20} />
-              Sign in with Google
-            </Button>
           </Form>
 
-          <p className="text-center text-small text-default-500 mt-6">
-            Don&apos;t have an account?{" "}
-            <Link
-              href={`/registration?callbackUrl=${encodeURIComponent(callbackUrl)}`}
-              className="text-primary hover:underline font-medium"
-            >
-              Sign up
-            </Link>
-          </p>
+          <div className="flex items-center gap-4 my-6">
+            <div className="flex-1 h-px bg-divider"></div>
+            <span className="text-xs text-default-400">OR</span>
+            <div className="flex-1 h-px bg-divider"></div>
+          </div>
+
+          <Button
+            variant="bordered"
+            className="w-full"
+            onPress={() =>
+              authClient.signIn.social({ provider: "google", callbackUrl })
+            }
+            isLoading={isGoogleLoading}
+          >
+            <FcGoogle size={20} />
+            Sign in with Google
+          </Button>
         </Card>
       </motion.div>
     </div>

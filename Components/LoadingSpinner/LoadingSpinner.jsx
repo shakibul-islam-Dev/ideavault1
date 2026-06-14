@@ -1,16 +1,15 @@
-"use client"; // <-- Ekhane fix kora hoyeche, ebar server runtime e ar error dibena
+"use client";
 import React from "react";
 import { motion } from "framer-motion";
 import { FiLoader } from "react-icons/fi";
 
 export default function LoadingSpinner() {
-  // Animation configuration for the dots
   const dotVariants = {
     animate: (i) => ({
-      scale: [1, 1.5, 1],
-      opacity: [0.3, 1, 0.3],
+      scale: [1, 1.2, 1],
+      opacity: [0.4, 1, 0.4],
       transition: {
-        duration: 1.2,
+        duration: 1.5,
         repeat: Infinity,
         ease: "easeInOut",
         delay: i * 0.2,
@@ -19,46 +18,42 @@ export default function LoadingSpinner() {
   };
 
   return (
-    <div className="relative flex flex-col items-center justify-center min-h-75 w-full bg-[#0a0c10] overflow-hidden rounded-2xl p-8 border border-white/3">
-      {/* Background Glow Ring */}
-      <div className="absolute w-48 h-48 bg-blue-500/5 rounded-full blur-3xl pointer-events-none" />
+    <div className="relative flex flex-col items-center justify-center min-h-[300px] w-full bg-background border border-border rounded-2xl p-8 overflow-hidden">
+      {/* Background Glow */}
+      <div className="absolute w-48 h-48 bg-primary/5 rounded-full blur-3xl pointer-events-none" />
 
-      {/* Main Spinner Wrapper */}
+      {/* Main Spinner */}
       <div className="relative flex items-center justify-center w-24 h-24">
-        {/* Outer Tech Ring - Outer Fast Spin */}
+        {/* Outer Ring */}
         <motion.div
           animate={{ rotate: 360 }}
-          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-          className="absolute inset-0 rounded-full border-2 border-t-blue-500 border-r-purple-500 border-b-transparent border-l-transparent opacity-80"
+          transition={{ duration: 4, repeat: Infinity, ease: "linear" }} // স্পিড কমিয়েছি
+          className="absolute inset-0 rounded-full border-2 border-t-primary border-r-primary/50 border-b-transparent border-l-transparent"
         />
 
-        {/* Inner Counter Ring - Slower Reverse Spin */}
+        {/* Inner Ring */}
         <motion.div
           animate={{ rotate: -360 }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
-          className="absolute inset-2 rounded-full border border-t-transparent border-r-transparent border-b-indigo-400 border-l-cyan-400 opacity-60"
+          transition={{ duration: 3, repeat: Infinity, ease: "linear" }} // স্পিড কমিয়েছি
+          className="absolute inset-3 rounded-full border border-t-transparent border-r-transparent border-b-primary/60 border-l-primary/60"
         />
 
-        {/* Center Pulsing Glow / Core Icon */}
+        {/* Core Icon */}
         <motion.div
-          animate={{ scale: [0.9, 1.1, 0.9], opacity: [0.6, 1, 0.6] }}
-          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          className="text-blue-400"
+          animate={{ scale: [0.95, 1.05, 0.95], opacity: [0.7, 1, 0.7] }}
+          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+          className="text-primary"
         >
-          <FiLoader
-            className="w-6 h-6 animate-spin text-blue-400 drop-shadow-[0_0_8px_rgba(59,130,246,0.5)]"
-            style={{ animationDuration: "3s" }}
-          />
+          <FiLoader className="w-6 h-6" />
         </motion.div>
       </div>
 
-      {/* Loading Text with Animated Dots */}
-      <div className="mt-6 flex flex-col items-center gap-1.5 z-10">
-        <span className="text-sm font-medium tracking-widest text-gray-400 uppercase font-mono">
-          Connecting to Server
+      {/* Loading Text */}
+      <div className="mt-6 flex flex-col items-center gap-2 z-10">
+        <span className="text-xs font-medium tracking-[0.2em] text-muted-foreground uppercase">
+          Connecting
         </span>
 
-        {/* Modern 3-Dot Staggered Animation */}
         <div className="flex items-center gap-1.5 h-2">
           {[0, 1, 2].map((index) => (
             <motion.div
@@ -66,7 +61,7 @@ export default function LoadingSpinner() {
               custom={index}
               variants={dotVariants}
               animate="animate"
-              className="w-1.5 h-1.5 rounded-full bg-linear-to-r from-blue-400 to-indigo-400"
+              className="w-1.5 h-1.5 rounded-full bg-primary"
             />
           ))}
         </div>

@@ -16,11 +16,10 @@ export default function SubmitIdeaForm() {
     setLoading(true);
 
     const formElement = e.currentTarget;
-
     try {
       const formData = new FormData(formElement);
       const rawPayload = Object.fromEntries(formData);
-      console.log(rawPayload);
+
       const formPayload = {
         title: rawPayload.title,
         ideaTitle: rawPayload.title,
@@ -34,89 +33,73 @@ export default function SubmitIdeaForm() {
         problem: rawPayload.problem,
         solution: rawPayload.solution,
       };
+
       if (value) {
         formPayload.date = value.toDate(getLocalTimeZone()).toISOString();
       }
 
-      // 1. Get user data from session
       const { data } = await authClient.getSession();
+      if (!data?.user?.id) throw new Error("User not authenticated.");
 
-      if (!data?.user?.id) {
-        throw new Error("User not authenticated. Please login.");
-      }
-
-      // 2. Attach user identifiers
       formPayload.userId = data.user.id;
-      const token = data?.session?.token;
-
-      // 3. Dispatch the network payload
-      const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL;
-      const response = await fetch(`${serverUrl}/api/idea`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/idea`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${data?.session?.token}`,
+          },
+          body: JSON.stringify(formPayload),
         },
-        body: JSON.stringify(formPayload),
-      });
+      );
 
-      const result = await response.json().catch(() => ({}));
-
-      if (!response.ok) {
-        throw new Error(result.message || result.error || "Submission failed");
-      }
+      if (!response.ok) throw new Error("Submission failed");
 
       toast.success("Idea submitted successfully!");
       formElement.reset();
       setValue(null);
     } catch (error) {
-      console.error("Submission Error:", error.message);
       toast.error(error.message);
     } finally {
       setLoading(false);
     }
   }
 
-  const fieldStyle =
-    "w-full p-3 rounded-lg border bg-white dark:bg-zinc-800 border-gray-300 dark:border-zinc-700 text-gray-900 dark:text-gray-100 outline-none focus:ring-2 focus:ring-blue-500 transition-colors";
+  const inputBase =
+    "w-full p-3 rounded-lg border border-input bg-background text-foreground outline-none focus:ring-2 focus:ring-primary transition-all";
+  const labelStyle = "block text-sm font-medium mb-1 text-muted-foreground";
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-black py-12 px-4 transition-colors">
+    <div className="min-h-screen bg-background py-12 px-4 transition-colors">
       <Toaster position="top-right" richColors />
       <div className="max-w-3xl mx-auto">
-        <h1 className="text-3xl font-bold mb-6 text-gray-900 dark:text-white flex items-center gap-2">
-          <Rocket className="text-blue-600" /> Submit Startup Idea
+        <h1 className="text-3xl font-bold mb-6 text-foreground flex items-center gap-2">
+          <Rocket className="text-primary" /> Submit Startup Idea
         </h1>
 
         <form
           onSubmit={handleSubmit}
-          className="bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 rounded-2xl p-8 shadow-sm space-y-5"
+          className="bg-card border border-border rounded-2xl p-8 shadow-sm space-y-5"
         >
-          {/* Idea Title */}
           <div>
-            <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">
-              Idea Title
-            </label>
-            <input name="title" required className={fieldStyle} />
+            <label className={labelStyle}>Idea Title</label>
+            <input name="title" required className={inputBase} />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">
-                Short Description
-              </label>
+              <label className={labelStyle}>Short Description</label>
               <textarea
                 name="shortDesc"
                 required
                 rows={2}
-                className={fieldStyle}
+                className={inputBase}
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">
-                Category
-              </label>
-              <select name="category" className={fieldStyle}>
+              <label className={labelStyle}>Category</label>
+              <select name="category" className={inputBase}>
                 <option value="tech">Tech</option>
                 <option value="health">Health</option>
                 <option value="ai">AI</option>
@@ -125,83 +108,62 @@ export default function SubmitIdeaForm() {
             </div>
           </div>
 
-          {/* Detailed Description */}
           <div>
-            <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">
-              Detailed Description
-            </label>
+            <label className={labelStyle}>Detailed Description</label>
             <textarea
               name="detailedDesc"
               required
               rows={4}
-              className={fieldStyle}
+              className={inputBase}
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">
-                Tags (Optional)
-              </label>
-              <input name="tags" className={fieldStyle} />
+              <label className={labelStyle}>Tags (Optional)</label>
+              <input name="tags" className={inputBase} />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">
-                Estimated Budget
-              </label>
-              <input name="budget" type="number" className={fieldStyle} />
+              <label className={labelStyle}>Estimated Budget</label>
+              <input name="budget" type="number" className={inputBase} />
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">
-              Image URL
-            </label>
-            <input name="imageUrl" type="url" className={fieldStyle} />
+            <label className={labelStyle}>Image URL</label>
+            <input name="imageUrl" type="url" className={inputBase} />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">
-              Target Audience
-            </label>
-            <input name="audience" className={fieldStyle} />
+            <label className={labelStyle}>Target Audience</label>
+            <input name="audience" className={inputBase} />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">
-              Problem Statement
-            </label>
-            <textarea name="problem" required rows={3} className={fieldStyle} />
+            <label className={labelStyle}>Problem Statement</label>
+            <textarea name="problem" required rows={3} className={inputBase} />
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">
-              Proposed Solution
-            </label>
-            <textarea
-              name="solution"
-              required
-              rows={3}
-              className={fieldStyle}
-            />
+            <label className={labelStyle}>Proposed Solution</label>
+            <textarea name="solution" required rows={3} className={inputBase} />
           </div>
 
-          {/* DateField with dark mode styling */}
           <div className="flex flex-col gap-2">
             <DateField
               value={value}
               onChange={setValue}
-              className="text-gray-900 dark:text-gray-100"
+              className="text-foreground"
             >
-              <Label className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+              <Label className="text-sm font-semibold text-muted-foreground">
                 Date
               </Label>
-              <DateField.Group className="flex w-full p-3 rounded-xl border border-gray-300 dark:border-zinc-700 bg-white dark:bg-zinc-800">
+              <DateField.Group className="flex w-full p-3 rounded-xl border border-input bg-background">
                 <DateField.Input className="flex w-full outline-none">
                   {(segment) => (
                     <DateField.Segment
                       segment={segment}
-                      className="px-0.5 text-gray-900 dark:text-gray-100 focus:bg-blue-500/20 rounded"
+                      className="px-0.5 text-foreground focus:bg-primary/20 rounded"
                     />
                   )}
                 </DateField.Input>
@@ -211,7 +173,7 @@ export default function SubmitIdeaForm() {
 
           <button
             disabled={loading}
-            className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl flex items-center justify-center gap-2 transition-all disabled:opacity-50"
+            className="w-full py-4 bg-primary text-primary-foreground font-bold rounded-xl flex items-center justify-center gap-2 transition-all hover:opacity-90 disabled:opacity-50"
           >
             {loading ? (
               "Saving..."

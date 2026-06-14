@@ -1,4 +1,5 @@
 "use client";
+import React from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 
 export default function SearchIdea() {
@@ -6,31 +7,19 @@ export default function SearchIdea() {
   const searchParams = useSearchParams();
   const pathname = usePathname();
 
-  const handleSearch = (e) => {
-    const term = e.target.value;
+  // Helper function to update URL params
+  const updateParams = (key, value) => {
     const params = new URLSearchParams(searchParams);
-
-    if (term) {
-      params.set("q", term);
+    if (value) {
+      params.set(key, value);
     } else {
-      params.delete("q");
+      params.delete(key);
     }
-
     router.replace(`${pathname}?${params.toString()}`);
   };
 
-  const handleCategoryChange = (e) => {
-    const category = e.target.value;
-    const params = new URLSearchParams(searchParams);
-
-    if (category) {
-      params.set("category", category);
-    } else {
-      params.delete("category");
-    }
-
-    router.replace(`${pathname}?${params.toString()}`);
-  };
+  const inputClass =
+    "w-full p-4 rounded-xl border border-input bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary transition-colors";
 
   return (
     <div className="w-full max-w-2xl mx-auto mb-10 flex flex-col md:flex-row gap-4">
@@ -39,15 +28,15 @@ export default function SearchIdea() {
         type="text"
         placeholder="Search ideas..."
         defaultValue={searchParams.get("q") || ""}
-        onChange={handleSearch}
-        className="w-full md:w-2/3 p-4 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors"
+        onChange={(e) => updateParams("q", e.target.value)}
+        className={`md:w-2/3 ${inputClass}`}
       />
 
       {/* Category Select */}
       <select
         defaultValue={searchParams.get("category") || ""}
-        onChange={handleCategoryChange}
-        className="w-full md:w-1/3 p-4 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors"
+        onChange={(e) => updateParams("category", e.target.value)}
+        className={`md:w-1/3 ${inputClass}`}
       >
         <option value="">All Categories</option>
         <option value="AI">AI</option>

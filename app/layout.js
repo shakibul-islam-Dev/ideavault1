@@ -35,7 +35,7 @@ export default function RootLayout({ children }) {
       suppressHydrationWarning
     >
       <body
-        className={`${poppins.className} flex flex-col min-h-screen bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-50 transition-colors duration-200`}
+        className={`${poppins.className} flex flex-col min-h-screen transition-colors duration-200 bg-background text-foreground`}
       >
         <ThemeProvider
           attribute="class"
